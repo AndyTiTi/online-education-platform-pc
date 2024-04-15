@@ -6,10 +6,10 @@ import UserInfo from '@/components/UserInfo';
 import zhCN from 'antd/locale/zh_CN';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './utils/apollo';
-import { ROUTE_CONFIG } from './routes';
-import Page404 from './containers/error/404';
+import { ROUTE_CONFIG } from './routes/index';
 import './index.css';
 import Layout from './components/Layout';
+import Login from './containers/Login';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
@@ -31,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <UserInfo>
           <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<Layout />}>
               {ROUTE_CONFIG.map((item) => (
                 <Route
@@ -40,7 +41,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 />
               ))}
             </Route>
-            <Route path="*" element={<Page404 />} />
           </Routes>
         </UserInfo>
       </BrowserRouter>

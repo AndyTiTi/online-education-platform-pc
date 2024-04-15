@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/no-unstable-nested-components */
 import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -20,10 +21,12 @@ import {
   ConfigProvider,
   Space, Tabs, message, theme,
 } from 'antd';
-import { useState } from 'react';
+import { useUserContext } from '@/hooks/userHooks';
 import { SEND_CODE_MSG, LOGIN } from '@/graphql/auth';
 import { AUTH_TOKEN } from '@/utils/constants';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+// import { useUserContext } from '@/hooks/userHooks';
+import { useTitle } from '@/hooks';
 import styles from './index.module.less';
 
 interface IValue {
@@ -38,18 +41,26 @@ export default () => {
   const [loginType, setLoginType] = useState<LoginType>('phone');
   const [run] = useMutation(SEND_CODE_MSG);
   const [login] = useMutation(LOGIN);
+  const [params] = useSearchParams();
+  const { store } = useUserContext();
   const nav = useNavigate();
+  useTitle('登录');
 
   const loginHadler = async (values:IValue) => {
     const res = await login({
       variables: values,
     });
     if (res.data.login.code === 200) {
+      store.refetchHandler();
       if (values.autoLogin) {
+        sessionStorage.setItem(AUTH_TOKEN, '');
         localStorage.setItem(AUTH_TOKEN, res.data.login.data);
+      } else {
+        localStorage.setItem(AUTH_TOKEN, '');
+        sessionStorage.setItem(AUTH_TOKEN, res.data.login.data);
       }
       message.success(res.data.login.message);
-      nav('/');
+      nav(params.get('orgUrl') || '/');
       return;
     }
     message.error(res.data.login.message);
@@ -72,6 +83,7 @@ export default () => {
         className={styles.container}
       >
         <LoginForm
+          initialValues={{ tel: '18055555555' }}
           onFinish={loginHadler}
           logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
           title="Github"
