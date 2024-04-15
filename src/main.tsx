@@ -1,9 +1,12 @@
+/* eslint-disable max-len */
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ConfigProvider, theme, App as AppMain } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './utils/apollo';
-import App from './App';
+import { ROUTE_CONFIG } from './routes';
+import Page404 from './containers/error/404';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -26,9 +29,18 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       }}
     >
       <AppMain>
-
-        {/* 很诡异的一个组件，包裹组件 地址：https://ant.design/components/app-cn#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8 */}
-        <App />
+        <BrowserRouter>
+          <Routes>
+            {ROUTE_CONFIG.map((item) => (
+              <Route
+                path={item.path}
+                element={<item.element />}
+                key={item.path}
+              />
+            ))}
+            <Route path="*" element={<Page404 />} />
+          </Routes>
+        </BrowserRouter>
       </AppMain>
     </ConfigProvider>
   </ApolloProvider>,

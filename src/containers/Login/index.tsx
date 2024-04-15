@@ -124,16 +124,15 @@ export default () => {
               },
             ]}
             onGetCaptcha={async (tel: string) => {
-              console.log('tel', tel);
               const res = await run({
                 variables: {
                   tel,
                 },
               });
-              if (res.data.sendCodeMsg) {
-                message.success('获取验证码成功！验证码为：1234');
+              if (res.data.sendCodeMsg.code === 200) {
+                message.success(res.data.sendCodeMsg.message);
               } else {
-                message.error('获取验证码失败！');
+                message.error(res.data.sendCodeMsg.message);
               }
             }}
           />
