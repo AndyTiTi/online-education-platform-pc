@@ -1,8 +1,9 @@
-import React from 'react';
+import { useUserContext } from '@/hooks/userHooks';
 
 function Home() {
+  const { store } = useUserContext();
   return (
-    <div>Home</div>
+    <div>{store.tel}</div>
   );
 }
 

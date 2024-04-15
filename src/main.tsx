@@ -1,13 +1,15 @@
 /* eslint-disable max-len */
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { ConfigProvider, theme, App as AppMain } from 'antd';
+import { ConfigProvider, theme } from 'antd';
+import UserInfo from '@/components/UserInfo';
 import zhCN from 'antd/locale/zh_CN';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './utils/apollo';
 import { ROUTE_CONFIG } from './routes';
 import Page404 from './containers/error/404';
 import './index.css';
+import Layout from './components/Layout';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
@@ -23,25 +25,25 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             colorPrimary: '#00b96b',
           },
         },
-        // algorithm: theme.darkAlgorithm, // 暗黑算法
-        algorithm: theme.defaultAlgorithm, // 默认算法
-      // algorithm: theme.compactAlgorithm, // 紧凑算法
+        algorithm: theme.defaultAlgorithm, // theme.compactAlgorithm 紧凑算法  theme.darkAlgorithm 暗黑算法
       }}
     >
-      <AppMain>
-        <BrowserRouter>
+      <BrowserRouter>
+        <UserInfo>
           <Routes>
-            {ROUTE_CONFIG.map((item) => (
-              <Route
-                path={item.path}
-                element={<item.element />}
-                key={item.path}
-              />
-            ))}
+            <Route path="/" element={<Layout />}>
+              {ROUTE_CONFIG.map((item) => (
+                <Route
+                  path={item.path}
+                  element={<item.element />}
+                  key={item.path}
+                />
+              ))}
+            </Route>
             <Route path="*" element={<Page404 />} />
           </Routes>
-        </BrowserRouter>
-      </AppMain>
+        </UserInfo>
+      </BrowserRouter>
     </ConfigProvider>
   </ApolloProvider>,
 );
