@@ -4,10 +4,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import UserInfo from '@/components/UserInfo';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './utils/apollo';
-import { routes } from './routes/index';
-import './index.css';
+import { routes } from './routes/menus';
 import Layout from './components/Layout';
 import Login from './containers/Login';
+import { ROUTE_COMPONENT } from './routes';
+
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
@@ -31,13 +33,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
-            {routes.map((item) => (
-              <Route
-                path={item.path}
-                key={item.path}
-                element={<item.element />}
-              />
-            ))}
+            {routes.map((item) => {
+              const Component = ROUTE_COMPONENT[item.key];
+              return (
+                <Route
+                  path={item.path}
+                  key={item.path}
+                  element={<Component />}
+                />
+              );
+            })}
           </Route>
         </Routes>
       </UserInfo>

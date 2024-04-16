@@ -1,7 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import {
-  ROUTE_CONFIG, ROUTE_KEY, getRouteByKey, routes,
-} from '@/routes';
+import { getRouteByKey, routes } from '@/routes/menus';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 
 export const useTitle = (title: string) => {
@@ -10,7 +8,10 @@ export const useTitle = (title: string) => {
   }, []);
 };
 
-// 通用页面跳转
+/**
+ * 通用页面跳转
+ * 可进行日志埋点
+ */
 export const useGoTo = () => {
   const nav = useNavigate();
   const back = () => nav(-1);
@@ -52,10 +53,10 @@ export const useMatchedRoute = () => {
   return route;
 };
 
-export const useIsOrgRoute = () => {
-  const curRoute = useMatchedRoute();
-  if (curRoute?.path === ROUTE_CONFIG[ROUTE_KEY.ORG].path) {
-    return true;
-  }
-  return false;
-};
+// export const useIsOrgRoute = () => {
+//   const curRoute = useMatchedRoute();
+//   if (curRoute?.path === ROUTE_CONFIG[ROUTE_KEY.ORG].path) {
+//     return true;
+//   }
+//   return false;
+// };
