@@ -1,9 +1,12 @@
 import { useUserContext } from '@/hooks/userHooks';
-import { MenuDataItem, PageContainer, ProLayout } from '@ant-design/pro-components';
+import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
 import React from 'react';
 import { AUTH_TOKEN } from '@/utils/constants';
-import { routes } from '@/routes/menus';
+import { ROUTE_KEY, routes } from '@/routes/menus';
+import { useGoTo } from '@/hooks';
+import { Space } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 import styles from './index.module.less';
 
 const menuItemRender = (
@@ -16,6 +19,7 @@ function Layout() {
   const outlet = useOutlet();
   const nav = useNavigate();
   const { store } = useUserContext();
+  const { go } = useGoTo();
   const logout = () => {
     sessionStorage.setItem(AUTH_TOKEN, '');
     localStorage.setItem(AUTH_TOKEN, '');
@@ -26,11 +30,17 @@ function Layout() {
       siderWidth={150}
       layout="mix"
       avatarProps={{
-        src: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-        title: store.tel,
+        src: store.avatar,
+        title: store.name,
         size: 'small',
-        onClick: logout,
+        onClick: () => go(ROUTE_KEY.MY),
       }}
+      links={[
+        <Space key="space" onClick={logout}>
+          <LogoutOutlined />
+          退出
+        </Space>,
+      ]}
       logo={<img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="logo" />}
       className={styles.container}
       route={{
@@ -40,9 +50,7 @@ function Layout() {
       onMenuHeaderClick={() => nav('/')}
       menuItemRender={menuItemRender}
     >
-      <PageContainer>
-        {outlet}
-      </PageContainer>
+      {outlet}
     </ProLayout>
   );
 }

@@ -14,7 +14,7 @@ export const useUserContext = () => useAppContext<IUser>(KEY);
 export const connect = connectFactory(KEY, DEFAULT_VALUE);
 
 export const useGetUser = () => {
-  const { store, setStore } = useUserContext();
+  const { setStore } = useUserContext();
   const nav = useNavigate();
   const location = useLocation();
   const { loading, refetch } = useQuery<{ getUserInfo: IUser }>(GET_USER, {
@@ -46,6 +46,5 @@ export const useGetUser = () => {
       }
     },
   });
-  console.log(store);
-  return { loading };
+  return { loading, refetch };
 };
