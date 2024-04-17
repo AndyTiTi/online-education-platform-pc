@@ -1,58 +1,76 @@
-import { useUserContext } from '@/hooks/userHooks';
 import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
-import React from 'react';
+import { useUserContext } from '@/hooks/userHooks';
 import { AUTH_TOKEN } from '@/utils/constants';
+
 import { ROUTE_KEY, routes } from '@/routes/menus';
-import { useGoTo } from '@/hooks';
-import { Space } from 'antd';
-import { LogoutOutlined } from '@ant-design/icons';
-import styles from './index.module.less';
+import { useGoTo, useIsOrgRoute } from '@/hooks';
+import { Space, Tooltip } from 'antd';
+import { LogoutOutlined, ShopOutlined } from '@ant-design/icons';
+import style from './index.module.less';
+import OrgSelect from '../OrgSelect';
 
 const menuItemRender = (
-  item:MenuDataItem,
-  dom:React.ReactNode,
-
+  item: MenuDataItem,
+  dom: React.ReactNode,
 ) => <Link to={item.path || '/'}>{dom}</Link>;
-
-function Layout() {
+/**
+* 外层框架
+*/
+const Layout = () => {
   const outlet = useOutlet();
-  const nav = useNavigate();
   const { store } = useUserContext();
+  const isOrg = useIsOrgRoute();
   const { go } = useGoTo();
-  const logout = () => {
+  const nav = useNavigate();
+
+  const logoutHandler = () => {
     sessionStorage.setItem(AUTH_TOKEN, '');
     localStorage.setItem(AUTH_TOKEN, '');
     nav('/login');
   };
+
+  const goToOrg = () => {
+    go(ROUTE_KEY.ORG);
+  };
+
   return (
     <ProLayout
-      siderWidth={150}
       layout="mix"
+      siderWidth={150}
       avatarProps={{
-        src: store.avatar,
+        src: store.avatar || null,
         title: store.name,
         size: 'small',
         onClick: () => go(ROUTE_KEY.MY),
       }}
       links={[
-        <Space key="space" onClick={logout}>
+        <Space size={20} onClick={logoutHandler}>
           <LogoutOutlined />
           退出
         </Space>,
       ]}
-      logo={<img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="logo" />}
-      className={styles.container}
+      title={false}
+      logo={<img src="https://water-drop-assets.oss-cn-hangzhou.aliyuncs.com/images/henglogo.png" alt="logo" />}
+      className={style.container}
+      onMenuHeaderClick={() => nav('/')}
       route={{
         path: '/',
         routes,
       }}
-      onMenuHeaderClick={() => nav('/')}
+      actionsRender={() => [
+        !isOrg && <OrgSelect />,
+        <Tooltip title="门店管理">
+          <ShopOutlined onClick={goToOrg} />
+        </Tooltip>,
+      ]}
       menuItemRender={menuItemRender}
     >
-      {outlet}
+      <div key={store.currentOrg}>
+        {outlet}
+      </div>
     </ProLayout>
   );
-}
+};
 
 export default Layout;

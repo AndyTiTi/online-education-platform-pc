@@ -8,7 +8,7 @@ function Home() {
   const { go } = useGoTo();
   return (
     <div>
-      {store.tel}
+      {store.name}
       <Button onClick={() => go(ROUTE_KEY.MY)}>去个人中心</Button>
     </div>
   );

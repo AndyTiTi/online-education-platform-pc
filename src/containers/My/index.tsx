@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import OSSImageUpload from '@/components/OSSImageUpload';
 import { UPDATE_USER } from '@/graphql/user';
 import { useGetUser, useUserContext } from '@/hooks/userHooks';
@@ -19,24 +20,15 @@ const My = () => {
   const { refetch } = useGetUser();
   const [updateUserInfo] = useMutation(UPDATE_USER);
 
-  const onUploadChange = (info: any) => {
-    formRef.current?.setFieldsValue({
-      avatar: {
-        url: info[0].url,
-      },
-    });
-    // }
-  };
-
   useEffect(() => {
     if (!store.tel) return;
     formRef.current?.setFieldsValue({
       tel: store.tel,
       name: store.name,
       desc: store.desc,
-      avatar: {
+      avatar: [{
         url: store.avatar,
-      },
+      }],
     });
   }, [store]);
   return (
@@ -58,7 +50,7 @@ const My = () => {
               params: {
                 name: values.name,
                 desc: values.desc,
-                avatar: values.avatar?.url || '',
+                avatar: values.avatar[0]?.url || '',
               },
             },
           });
@@ -81,7 +73,6 @@ const My = () => {
                 console.error('Error fetching new user info:', error);
               });
             }
-            // store.refetchHandler();
             // message.success(res.data.updateUserInfo.message);
           }
           // message.error(res.data.updateUserInfo.message);
@@ -108,12 +99,9 @@ const My = () => {
           </Col>
           <Col>
             <Form.Item
-              name="avatar" // 以下两条是必须的
-              valuePropName="avatar"
-              // 如果没有下面这一句会报错
-              getValueFromEvent={(e) => e && e.file}
+              name="avatar"
             >
-              <OSSImageUpload onChange={onUploadChange} label="更改头像" />
+              <OSSImageUpload label="更改头像" />
             </Form.Item>
           </Col>
         </Row>
