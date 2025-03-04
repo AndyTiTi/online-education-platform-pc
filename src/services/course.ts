@@ -84,6 +84,7 @@ export const useCourse = () => {
       variables: {
         id,
       },
+      fetchPolicy: 'no-cache',
     });
 
     return res.data.getCourseInfo.data;
@@ -97,6 +98,7 @@ export const useCourseInfo = (id: string) => {
     variables: {
       id,
     },
+    // fetchPolicy: 'no-cache',
   });
 
   return { data: data?.getCourseInfo.data, loading, refetch };
